@@ -59,19 +59,19 @@ $outputFileName = "$baseFileName.iso"
 if (Test-Path $outputFileName) {
     if (Test-Hash -filePath $outputFileName -expectedHash $expectedHash) {
         Write-Host "MD5 hash verification successful. The output file is valid." -ForegroundColor Green
+        
+        $cleanupConfirmation = Read-Host "Do you want to delete the part files? (Y/N)"
+        if ($cleanupConfirmation -eq 'Y' -or $cleanupConfirmation -eq 'y') {
+            $finalConfirmation = Read-Host "Are you sure you want to delete the part files? (Y/N)"
+            if ($finalConfirmation -eq 'Y' -or $finalConfirmation -eq 'y') {
+                Remove-PartFiles -baseFileName $baseFileName
+            } else {
+                Write-Host "Cleanup cancelled." -ForegroundColor Yellow
+            }
+        }
     } else {
         Write-Host "MD5 hash verification failed. The output file may be corrupted." -ForegroundColor Red
     }
 } else {
     Write-Host "Output file '$outputFileName' was not created." -ForegroundColor Red
-}
-
-$cleanupConfirmation = Read-Host "Do you want to delete the part files? (Y/N)"
-if ($cleanupConfirmation -eq 'Y' -or $cleanupConfirmation -eq 'y') {
-    $finalConfirmation = Read-Host "Are you sure you want to delete the part files? (Y/N)"
-    if ($finalConfirmation -eq 'Y' -or $finalConfirmation -eq 'y') {
-        Remove-PartFiles -baseFileName $baseFileName
-    } else {
-        Write-Host "Cleanup cancelled." -ForegroundColor Yellow
-    }
 }
