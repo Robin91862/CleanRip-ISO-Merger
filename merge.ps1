@@ -4,12 +4,12 @@ function Show-Welcome {
     Write-Host "       CleanRip ISO Merger        " -ForegroundColor Cyan
     Write-Host "----------------------------------" -ForegroundColor Cyan
     Write-Host "Copyright 2025 Robin91862" -ForegroundColor Yellow
-    Write-Host "https://github.com/Robin91862" -ForegroundColor Yellow
+    Write-Host "https://github.com/Robin91862/CleanRip-ISO-Merger" -ForegroundColor Yellow
     Write-Host "Licensed under the Apache License, Version 2.0" -ForegroundColor Yellow
     Write-Host "Make sure this script is in the same folder as your ISO files!" -ForegroundColor Red
 }
 
-function Verify-Hash {
+function Test-Hash {
     param (
         [string]$filePath,
         [string]$expectedHash
@@ -19,7 +19,7 @@ function Verify-Hash {
     return $hash.Hash -eq $expectedHash
 }
 
-function Cleanup-PartFiles {
+function Remove-PartFiles {
     param (
         [string]$baseFileName
     )
@@ -31,7 +31,7 @@ Show-Welcome
 
 $expectedHash = Read-Host "Enter the expected MD5 hash of the output ISO"
 
-$baseFileName = Read-Host "Enter the game ID (it's the ID before ".part0.iso")"
+$baseFileName = Read-Host "Enter the game ID (it's the ID before .part0.iso)"
 
 Write-Host "You entered:" -ForegroundColor Cyan
 Write-Host "Expected MD5 Hash: $expectedHash" -ForegroundColor Yellow
@@ -57,7 +57,7 @@ Start-Process cmd.exe -ArgumentList "/c", $command -NoNewWindow -Wait
 $outputFileName = "$baseFileName.iso"
 
 if (Test-Path $outputFileName) {
-    if (Verify-Hash -filePath $outputFileName -expectedHash $expectedHash) {
+    if (Test-Hash -filePath $outputFileName -expectedHash $expectedHash) {
         Write-Host "MD5 hash verification successful. The output file is valid." -ForegroundColor Green
     } else {
         Write-Host "MD5 hash verification failed. The output file may be corrupted." -ForegroundColor Red
@@ -70,7 +70,7 @@ $cleanupConfirmation = Read-Host "Do you want to delete the part files? (Y/N)"
 if ($cleanupConfirmation -eq 'Y' -or $cleanupConfirmation -eq 'y') {
     $finalConfirmation = Read-Host "Are you sure you want to delete the part files? (Y/N)"
     if ($finalConfirmation -eq 'Y' -or $finalConfirmation -eq 'y') {
-        Cleanup-PartFiles -baseFileName $baseFileName
+        Remove-PartFiles -baseFileName $baseFileName
     } else {
         Write-Host "Cleanup cancelled." -ForegroundColor Yellow
     }
