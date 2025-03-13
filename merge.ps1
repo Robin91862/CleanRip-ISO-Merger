@@ -39,13 +39,13 @@ Write-Host "Game ID: $baseFileName" -ForegroundColor Yellow
 
 $confirmation = Read-Host "Is this information correct? (Y/N)"
 if ($confirmation -ne 'Y' -and $confirmation -ne 'y') {
-    Write-Host "Exiting." -ForegroundColor Yellow
+    Read-Host "Press Enter to exit"
     exit
 }
 
 $mergeConfirmation = Read-Host "Do you want to merge these files? (Y/N)"
 if ($mergeConfirmation -ne 'Y' -and $mergeConfirmation -ne 'y') {
-    Write-Host "Exiting." -ForegroundColor Yellow
+    Read-Host "Press Enter to exit"
     exit
 }
 
@@ -65,13 +65,20 @@ if (Test-Path $outputFileName) {
             $finalConfirmation = Read-Host "Are you sure you want to delete the part files? (Y/N)"
             if ($finalConfirmation -eq 'Y' -or $finalConfirmation -eq 'y') {
                 Remove-PartFiles -baseFileName $baseFileName
+                Read-Host "Press Enter to exit"
             } else {
-                Write-Host "Cleanup cancelled." -ForegroundColor Yellow
+                Write-Host "Cleanup skipped." -ForegroundColor Yellow
+                Read-Host "Press Enter to exit"
             }
+        } else {
+            Write-Host "Cleanup skipped." -ForegroundColor Yellow
+            Read-Host "Press Enter to exit"
         }
     } else {
         Write-Host "MD5 hash verification failed. The output file may be corrupted." -ForegroundColor Red
+        Read-Host "Press Enter to exit"
     }
 } else {
     Write-Host "Output file '$outputFileName' was not created." -ForegroundColor Red
+    Read-Host "Press Enter to exit"
 }
