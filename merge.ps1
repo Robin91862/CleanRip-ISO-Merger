@@ -62,7 +62,7 @@ if ($systemType -eq 'Windows') {
     Write-Host "Using 'copy' command for Windows." -ForegroundColor Cyan
     Start-Process cmd.exe -ArgumentList "/c", $command -NoNewWindow -Wait
 } elseif ($systemType -eq 'Linux' -or $systemType -eq 'macOS') {
-    $command = "cat \$(ls $baseFileName.part?.iso | sort) > $baseFileName.iso"
+    $command = "cat $(ls $baseFileName.part*.iso | sort -V) > $baseFileName.iso"
     Write-Host "Using 'cat' command for Linux/macOS." -ForegroundColor Cyan
     bash -c $command
 } else {
