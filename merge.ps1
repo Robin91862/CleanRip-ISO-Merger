@@ -23,8 +23,14 @@ function Remove-PartFiles {
     param (
         [string]$baseFileName
     )
-    Remove-Item "$baseFileName.part*" -Force
-    Write-Host "Cleaned up part files." -ForegroundColor Green
+    $pattern = "$baseFileName.part*.iso"
+    $files = Get-ChildItem -Path . -Filter $pattern
+    if ($files.Count -gt 0) {
+        Remove-Item $files.FullName -Force
+        Write-Host "Cleaned up part files." -ForegroundColor Green
+    } else {
+        Write-Host "No part files found to delete." -ForegroundColor Yellow
+    }
 }
 
 Show-Welcome
