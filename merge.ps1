@@ -49,10 +49,15 @@ if ($mergeConfirmation -ne 'Y' -and $mergeConfirmation -ne 'y') {
     exit
 }
 
-$command = "copy /b $baseFileName.part?.iso $baseFileName.iso > NUL 2>&1"
-
-Write-Host "Executing command, please wait!" -ForegroundColor Green
-Start-Process cmd.exe -ArgumentList "/c", $command -NoNewWindow -Wait
+if ($IsWindows) {
+    $command = "copy /b $baseFileName.part?.iso $baseFileName.iso"
+    Write-Host "Detected Windows. Using 'copy' command." -ForegroundColor Cyan
+    Start-Process cmd.exe -ArgumentList "/c", $command -NoNewWindow -Wait
+} else {
+    $command = "cat \$(ls $baseFileName.part?.iso | sort) > $baseFileName.iso"
+    Write-Host "Detected Linux/macOS. Using 'cat' command." -ForegroundColor Cyan
+    bash -c $command
+}
 
 $outputFileName = "$baseFileName.iso"
 
