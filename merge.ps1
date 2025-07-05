@@ -49,14 +49,20 @@ if ($mergeConfirmation -ne 'Y' -and $mergeConfirmation -ne 'y') {
     exit
 }
 
-if ($IsWindows) {
+$systemType = Read-Host "Are you running this script on Windows, Linux, or macOS? (Enter 'Windows', 'Linux', or 'macOS')"
+
+if ($systemType -eq 'Windows') {
     $command = "copy /b $baseFileName.part?.iso $baseFileName.iso"
-    Write-Host "Detected Windows. Using 'copy' command." -ForegroundColor Cyan
+    Write-Host "Using 'copy' command for Windows." -ForegroundColor Cyan
     Start-Process cmd.exe -ArgumentList "/c", $command -NoNewWindow -Wait
-} else {
+} elseif ($systemType -eq 'Linux' -or $systemType -eq 'macOS') {
     $command = "cat \$(ls $baseFileName.part?.iso | sort) > $baseFileName.iso"
-    Write-Host "Detected Linux/macOS. Using 'cat' command." -ForegroundColor Cyan
+    Write-Host "Using 'cat' command for Linux/macOS." -ForegroundColor Cyan
     bash -c $command
+} else {
+    Write-Host "Unknown system type." -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit
 }
 
 $outputFileName = "$baseFileName.iso"
